@@ -1,0 +1,13 @@
+# Python build artefacts
+__pycache__/
+*.py[cod]
+
+# Local environment and editor files
+.env
+.env.*
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Cloudflare local output
+.wrangler/

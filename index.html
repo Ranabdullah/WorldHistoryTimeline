@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Myths, Writers &amp; History — Chronological Multi-Track Timeline</title>
+  <meta name="description" content="A vertical top-to-bottom interactive world timeline connecting global mythologies, founding epics, and legendary writers from 10,000 BCE to 1800 CE.">
+  
+  <!-- Google Fonts for Editorial Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400;1,600&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-icon">Ω</div>
+      <div class="brand-title">
+        <h1>World Myths, Writers &amp; History</h1>
+        <p>A Chronological Epic of Human Imagination · 10,000 BCE — 1800 CE · <span id="storyCountBadge" style="color: var(--line-black); font-weight: 700;">96 Epics &amp; Stories</span></p>
+      </div>
+    </div>
+
+    <!-- Global Actions -->
+    <div class="header-actions">
+      <button id="harvestWebBtn" class="btn-secondary" style="border-color: var(--line-black); background: var(--bg-subtle);" title="Search the internet and add any story to this timeline">
+        <span>✨</span> Harvest Web Story
+      </button>
+      <button id="resetBtn" class="btn-secondary" title="Reset View &amp; Filters">
+        <span>↺</span> Reset View
+      </button>
+      <button id="aboutBtn" class="btn-secondary">
+        <span>ⓘ</span> About Map
+      </button>
+    </div>
+  </header>
+
+  <!-- Filter & Box Zoom Toolbar -->
+  <div class="toolbar">
+    <!-- Live Search -->
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search writers, epics, myths, places..." autocomplete="off">
+    </div>
+
+    <!-- Box Zooming & Density Controls -->
+    <div class="box-zoom-controls">
+      <span>Box Size:</span>
+      <input type="range" id="boxZoomSlider" class="box-zoom-slider" min="0.65" max="1.5" step="0.05" value="1.0" title="Zoom In/Out Boxes">
+      
+      <span style="margin-left: 8px;">Density:</span>
+      <div class="density-toggle">
+        <button class="density-btn" data-density="compact" title="Compact View">Compact</button>
+        <button class="density-btn active" data-density="regular" title="Regular View">Regular</button>
+        <button class="density-btn" data-density="detailed" title="Detailed View">Detailed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Region Legend Filter Chips -->
+  <div id="regionChipsBar" class="region-chips-bar"></div>
+
+  <!-- Main Vertical Multi-Track Board Container -->
+  <main id="mainAppContainer"></main>
+
+  <!-- ==========================================================================
+       IN-WINDOW EXPANDABLE STORY READER (SLIDE-IN DRAWER)
+       ========================================================================== -->
+  <div id="readerOverlay" class="reader-overlay"></div>
+  <aside id="readerWindow" class="reader-window" aria-labelledby="readerTitle">
+    
+    <!-- Reader Header Bar -->
+    <div class="reader-header">
+      <div id="readerBreadcrumbs" class="reader-meta-breadcrumbs"></div>
+      <div class="reader-header-actions">
+        <button id="btnFontMinus" class="icon-action-btn" title="Decrease Font Size">A−</button>
+        <button id="btnFontPlus" class="icon-action-btn" title="Increase Font Size">A+</button>
+        <button id="readerCloseBtn" class="icon-action-btn" style="font-size: 1.2rem; font-weight: bold;" title="Close Story">✕</button>
+      </div>
+    </div>
+
+    <!-- Audio Speech Narration Toolbar -->
+    <div class="reader-audio-bar">
+      <div class="audio-controls">
+        <button id="btnPlayAudio" class="btn-audio-play">
+          <span>▶</span> Listen to Story
+        </button>
+        <span style="font-size: 0.74rem; color: var(--text-dim);">AI Voice Narration</span>
+      </div>
+      <span style="font-size: 0.72rem; color: var(--text-dim); font-style: italic;">In-Window Deep Reader</span>
+    </div>
+
+    <!-- Reader Scrollable Body -->
+    <div id="readerBody" class="reader-body">
+      
+      <!-- Date & Main Title Section -->
+      <div class="reader-title-section">
+        <span id="readerDatePill" class="reader-date-pill"></span>
+        <h2 id="readerTitle"></h2>
+        <p id="readerSubtitle" class="reader-subtitle"></p>
+      </div>
+
+      <!-- Author Dossier Box -->
+      <div class="reader-author-box">
+        <div style="font-size: 1.4rem;">✒️</div>
+        <div id="readerAuthorDetails" class="author-details"></div>
+      </div>
+
+      <!-- Act Navigation Tabs -->
+      <nav id="readerActTabs" class="act-tabs" aria-label="Story Acts"></nav>
+
+      <!-- Main Narrative Story Content -->
+      <article id="readerStoryContent" class="story-text-content"></article>
+
+      <!-- Famous Quote Card -->
+      <div id="readerQuoteContainer" class="story-quote-card" style="display:none;"></div>
+
+      <!-- Characters Dossier Section -->
+      <section id="readerCharactersSection" style="display:none;">
+        <h4 class="reader-section-title">
+          <span>👥</span> Key Characters &amp; Mythic Figures
+        </h4>
+        <div id="readerCharactersGrid" class="characters-grid"></div>
+      </section>
+
+      <!-- Comparative Echoes Section -->
+      <section id="readerEchoesSection" class="echoes-box" style="display:none;">
+        <h4 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--line-black); margin-bottom: 6px;">
+          <span>🌐</span> Echoes Across Civilizations
+        </h4>
+        <p id="readerEchoesText" style="font-size: 0.88rem; color: var(--text-main); line-height: 1.6;"></p>
+      </section>
+
+      <!-- Historical Context Section -->
+      <section id="readerHistorySection" class="historical-context-box" style="display:none;">
+        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--line-black); margin-bottom: 6px;">
+          🏛️ Historical &amp; Archaeological Context
+        </h4>
+        <p id="readerHistoryText"></p>
+      </section>
+
+      <!-- Themes Tags List -->
+      <div id="readerThemesList" class="themes-list"></div>
+    </div>
+  </aside>
+
+  <!-- Harvest Web Story Modal -->
+  <div id="harvestModal" class="modal-overlay">
+    <div class="modal-content">
+      <button id="harvestCloseBtn" class="modal-close-btn">✕</button>
+      <h2>✨ Harvest Live Web Story</h2>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+        Type any world myth, epic, ancient author, or folklore story. The app will search the internet, extract details, and instantly add it to your timeline.
+      </p>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <input type="text" id="harvestInput" placeholder="e.g. Perseus, Epic of King Gesar, Tristan and Iseult, Moby-Dick..." style="flex-grow: 1; padding: 8px 12px; border: 1.5px solid var(--border-dark); border-radius: var(--radius-md); font-size: 0.85rem; outline: none;">
+        <button id="btnExecuteHarvest" class="btn-secondary" style="background: var(--line-black); color: #ffffff; padding: 8px 16px;">
+          <span>🔍</span> Fetch
+        </button>
+      </div>
+
+      <div id="harvestStatus" style="font-size: 0.82rem; font-weight: 600; margin-bottom: 12px; min-height: 20px;"></div>
+
+      <div id="harvestPreview" style="display: none; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+        <div id="harvestPreviewDate" style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--line-black);"></div>
+        <h3 id="harvestPreviewTitle" style="font-family: var(--font-serif); font-size: 1.1rem; margin: 4px 0;"></h3>
+        <p id="harvestPreviewExtract" style="font-size: 0.82rem; line-height: 1.5; color: var(--text-main); margin-bottom: 12px;"></p>
+        <button id="btnAddHarvestedStory" class="btn-secondary" style="background: var(--line-black); color: #ffffff; width: 100%; justify-content: center; padding: 8px;">
+          ➕ Add to Timeline Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal Dialog -->
+  <div id="aboutModal" class="modal-overlay">
+    <div class="modal-content">
+      <button id="aboutCloseBtn" class="modal-close-btn">✕</button>
+      <h2>About World Myths, Writers &amp; History</h2>
+      <p>
+        <strong>World Myths, Writers &amp; History</strong> is an interactive vertical timeline running from top to bottom (10,000 BCE to 1800 CE).
+      </p>
+      <p>
+        <strong>Multi-Track Regional Dotted Lines:</strong> Each cultural region has its own vertical track with continuous dotted lines from top to bottom.
+      </p>
+      <p>
+        <strong>Google Photos Date Scrubber:</strong> Use the right-side rail to jump smoothly to any epoch in world history.
+      </p>
+      <p>
+        <strong>Box Zooming &amp; Middle Mouse Pan:</strong> Adjust the box size slider to zoom cards in and out, and hold the middle mouse button or drag the background to pan anywhere.
+      </p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/stories_data.js"></script>
+  <script src="js/timeline_renderer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
