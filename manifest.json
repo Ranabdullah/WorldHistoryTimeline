@@ -1,0 +1,17 @@
+{
+  "name": "World Myths, Writers & History Timeline",
+  "short_name": "World Myths",
+  "description": "Chronological epic connecting global mythologies, founding epics, and legendary writers from 10,000 BCE to 1800 CE",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    {
+      "src": "css/styles.css",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
